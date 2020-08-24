@@ -1,13 +1,13 @@
 Plan
 ----
-create redis cache service in Azure
-create github repo
-create local repo
-populate with template api and unit test projects
+x create redis cache service in Azure
+x create github repo
+x create local repo
+x populate with template api and unit test projects
+x add auth0
+x add swagger
 sketch out api, documents(models) from requirements doc
 (and unit tests?)
-add swagger
-add auth0
 add redis cache
 add calls to/from cache
 automapper - no

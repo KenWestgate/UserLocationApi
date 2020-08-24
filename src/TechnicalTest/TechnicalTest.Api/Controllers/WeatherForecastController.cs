@@ -25,7 +25,6 @@ namespace TechnicalTest.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
