@@ -81,6 +81,32 @@ namespace TechnicalTest.Api.Services
             };
         }
 
+        public async Task<OperationResult<List<UserCurrentLocation>>> GetLocationHistoryForUserAsync(string userIdentifier)
+        {
+            try
+            {
+                // TODO: key making function for consistency
+                var key = $"{userIdentifier}{USER_LOCATION_HISTORY_SUFFIX}";
+                var userLocationHistoryJson = await _distributedCache.GetStringAsync(key);
+                var userLocationHistory = JsonSerializer.Deserialize<List<UserCurrentLocation>>(userLocationHistoryJson);
+                return new OperationResult<List<UserCurrentLocation>>()
+                {
+                    Success = true,
+                    Model = userLocationHistory
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, nameof(GetLocationHistoryForUserAsync));
+            }
+
+            return new OperationResult<List<UserCurrentLocation>>()
+            {
+                Success = false,
+                Model = new List<UserCurrentLocation>()
+            };
+        }
+
         #endregion
 
         #region private methods

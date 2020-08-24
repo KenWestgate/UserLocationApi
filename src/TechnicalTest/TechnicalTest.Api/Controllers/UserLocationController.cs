@@ -51,7 +51,11 @@ namespace TechnicalTest.Api.Controllers
         public async Task<IActionResult> GetLocationHistoryForUser([FromRoute]string userIdentifier)
         {
             _logger.LogInformation($"{nameof(GetLocationHistoryForUser)}: {userIdentifier}");
-            return StatusCode(500);
+            var result = await _userLocationService.GetLocationHistoryForUserAsync(userIdentifier);
+            if (result.Success)
+                return Ok(result.Model);
+
+            return NotFound(userIdentifier);
         }
 
         [HttpGet]

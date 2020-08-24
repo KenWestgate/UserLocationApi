@@ -34,6 +34,7 @@ A user does not have to exist before receiving a location update - this action w
 Next Steps
 ----------
 Persistent storage (CosmosDB? - what are requirements re global redundancy/resilience etc?)
+Limits to number of users/history returned, use limit,top & skip type query string parameters
 Automapper, separate service for database access
 Complete suite of Unit tests
 Code Coverage tests
