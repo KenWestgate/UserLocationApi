@@ -25,6 +25,7 @@ Swagger UI - enable authentication?
 Decisions
 ---------
 Use redis as database
+Lat/Long as doubles - other formats tbc?
 
 Assumptions
 -----------
