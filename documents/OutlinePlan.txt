@@ -1,0 +1,49 @@
+Plan
+----
+create redis cache service in Azure
+create github repo
+create local repo
+populate with template api and unit test projects
+sketch out api, documents(models) from requirements doc
+(and unit tests?)
+add swagger
+add auth0
+add redis cache
+add calls to/from cache
+automapper - no
+dockerize
+deploy to azure api
+export postman file
+ReadMe file
+
+if time (inlikely)
+Validation - set documents (models)
+Improve error handling
+Swagger UI - add comments for use in generated documentation in UI
+Swagger UI - enable authentication?
+
+Decisions
+---------
+Use redis as database
+
+Assumptions
+-----------
+A user does not have to exist before receiving a location update - this action will also create a user.
+
+Next Steps
+----------
+Persistent storage (CosmosDB? - what are requirements re global redundancy/resilience etc?)
+Automapper, separate service for database access
+Complete suite of Unit tests
+Code Coverage tests
+versioning
+use APIM - better versioning, testing, security etc.
+use Azure KeyVaults for the auth0 secrets / container environment variables - feed into pipeline
+DevOps Pipeline
+terraform
+CORS - if needed
+Status page for service
+
+Extras
+------
+Flag/log current location changes that defy physics
