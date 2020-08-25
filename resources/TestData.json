@@ -89,11 +89,30 @@
         ]
     },
     {
-        "AreaBoundary": {
-            "Southern": 51.752633,
-            "Eastern": -1.253358,
-            "Northern": 51.754081,
-            "Western": -1.258883
-        }
+        "Zak": [
+            {
+                "id": "Zak",
+                "currentLocation": {
+                    "latitude": 51.254696,
+                    "longitude": -179.095013
+                }
+            }
+        ]
+    }
+    {
+        "AreaBoundary": [
+            {
+                "northernBoundary": 51.754081,
+                "easternBoundary": -1.253358,
+                "southernBoundary": 51.752633,
+                "westernBoundary": -1.258883
+            },
+            {
+                "northernBoundary": 51.256696,
+                "easternBoundary": -179.000000,
+                "southernBoundary": 51.252696,
+                "westernBoundary":  179.000000
+            }
+        ]
     }
 ]

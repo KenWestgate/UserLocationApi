@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TechnicalTest.Api.Documents;
@@ -130,6 +131,67 @@ namespace TechnicalTest.Api.Services
             };
         }
 
+        public async Task<OperationResult<List<UserCurrentLocation>>> GetCurrentLocationForUsersInAreaAsync(AreaBoundary areaBoundary)
+        {
+            try
+            {
+                var allUsersCurrentLocation = await GetAllUsersCurrentLocation();
+
+                var leftBoundary = 0D;
+                var rightBoundary = 0D;
+
+                // TODO: This logic needs checking - check for libraries/better data types for geolocation
+                if (Math.Abs(areaBoundary.WesternBoundary) <= 90 && Math.Abs(areaBoundary.EasternBoundary) <= 90)
+                {
+                    if ((areaBoundary.WesternBoundary < areaBoundary.EasternBoundary))
+                    {
+                        leftBoundary = areaBoundary.WesternBoundary;
+                        rightBoundary = areaBoundary.EasternBoundary;
+                    }
+                    else
+                    {
+                        leftBoundary = areaBoundary.EasternBoundary;
+                        rightBoundary = areaBoundary.WesternBoundary;
+                    }
+                }
+                else
+                {
+                    if ((areaBoundary.WesternBoundary > areaBoundary.EasternBoundary))
+                    {
+                        leftBoundary = areaBoundary.WesternBoundary;
+                        rightBoundary = areaBoundary.EasternBoundary;
+                    }
+                    else
+                    {
+                        leftBoundary = areaBoundary.EasternBoundary;
+                        rightBoundary = areaBoundary.WesternBoundary;
+                    }
+                }
+
+                var usersInArea = allUsersCurrentLocation
+                    .Where(u => u.CurrentLocation.Latitude < areaBoundary.NorthernBoundary)
+                    .Where(u => u.CurrentLocation.Latitude > areaBoundary.SouthernBoundary)
+                    .Where(u => (u.CurrentLocation.Longitude > leftBoundary) || (u.CurrentLocation.Longitude < rightBoundary))
+                    .ToList();
+
+                return new OperationResult<List<UserCurrentLocation>>()
+                {
+                    Success = true,
+                    Model = usersInArea
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, nameof(GetCurrentLocationForAllUsersAsync));
+            }
+
+            return new OperationResult<List<UserCurrentLocation>>()
+            {
+                Success = false,
+                Model = new List<UserCurrentLocation>()
+            };
+        }
+
         #endregion
 
         #region private methods
@@ -175,7 +237,8 @@ namespace TechnicalTest.Api.Services
             try
             {
                 allUsersCurrentLocation = await GetAllUsersCurrentLocation();
-                var index = allUsersCurrentLocation.FindIndex(u => {
+                var index = allUsersCurrentLocation.FindIndex(u =>
+                {
                     return String.Compare(u.Id, userCurrentLocation.Id, StringComparison.InvariantCultureIgnoreCase) == 0;
                 });
                 if (index > -1)

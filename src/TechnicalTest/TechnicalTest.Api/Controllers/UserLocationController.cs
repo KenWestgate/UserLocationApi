@@ -75,6 +75,10 @@ namespace TechnicalTest.Api.Controllers
         public async Task<IActionResult> GetCurrentLocationForUsersInArea([FromBody]AreaBoundary areaBoundary)
         {
             _logger.LogInformation($"{nameof(GetCurrentLocationForUsersInArea)}");
+            var result = await _userLocationService.GetCurrentLocationForUsersInAreaAsync(areaBoundary);
+            if (result.Success)
+                return Ok(result.Model);
+
             return StatusCode(500);
         }
 
