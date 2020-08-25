@@ -1,0 +1,118 @@
+[
+    {
+        "Alice": [
+            {
+                "id": "Alice",
+                "currentLocation": {
+                    "latitude": 51.752009,
+                    "longitude": -1.257765
+                }
+            },
+            {
+                "id": "Alice",
+                "currentLocation": {
+                    "latitude": 51.752253,
+                    "longitude": -1.257902
+                }
+            },
+            {
+                "id": "Alice",
+                "currentLocation": {
+                    "latitude": 51.752472,
+                    "longitude": -1.258028
+                }
+            },
+            {
+                "id": "Alice",
+                "currentLocation": {
+                    "latitude": 51.752693,
+                    "longitude": -1.258151
+                }
+            },
+            {
+                "id": "Alice",
+                "currentLocation": {
+                    "latitude": 51.752934,
+                    "longitude": -1.258307
+                }
+            }
+        ]
+    },
+    {
+        "Bob": [
+            {
+                "id": "Bob",
+                "currentLocation": {
+                    "latitude": 51.753596,
+                    "longitude": -1.254390
+                }
+            },
+            {
+                "id": "Bob",
+                "currentLocation": {
+                    "latitude": 51.753526,
+                    "longitude": -1.255093
+                }
+            },
+            {
+                "id": "Bob",
+                "currentLocation": {
+                    "latitude": 51.753506,
+                    "longitude": -1.255501
+                }
+            }
+        ]
+    },
+    {
+        "Chris": [
+            {
+                "id": "Chris",
+                "currentLocation": {
+                    "latitude": 51.752218,
+                    "longitude": -1.257842
+                }
+            },
+            {
+                "id": "Chris",
+                "currentLocation": {
+                    "latitude": 51.751912,
+                    "longitude": -1.257663
+                }
+            },
+            {
+                "id": "Chris",
+                "currentLocation": {
+                    "latitude": 51.751619,
+                    "longitude": -1.257475
+                }
+            }
+        ]
+    },
+    {
+        "Zak": [
+            {
+                "id": "Zak",
+                "currentLocation": {
+                    "latitude": 51.254696,
+                    "longitude": -179.095013
+                }
+            }
+        ]
+    }
+    {
+        "AreaBoundary": [
+            {
+                "northernBoundary": 51.754081,
+                "easternBoundary": -1.253358,
+                "southernBoundary": 51.752633,
+                "westernBoundary": -1.258883
+            },
+            {
+                "northernBoundary": 51.256696,
+                "easternBoundary": -179.000000,
+                "southernBoundary": 51.252696,
+                "westernBoundary":  179.000000
+            }
+        ]
+    }
+]

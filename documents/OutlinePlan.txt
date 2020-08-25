@@ -6,14 +6,14 @@ x create local repo
 x populate with template api and unit test projects
 x add auth0
 x add swagger
-sketch out api, documents(models) from requirements doc
-(and unit tests?)
-add redis cache
+x sketch out api, documents(models) from requirements doc
+- (and unit tests?)
+x add redis cache
 add calls to/from cache
-automapper - no
+- automapper - no
 dockerize
 deploy to azure api
-export postman file
+create postman team and share
 ReadMe file
 
 if time (inlikely)
@@ -34,6 +34,7 @@ A user does not have to exist before receiving a location update - this action w
 Next Steps
 ----------
 Persistent storage (CosmosDB? - what are requirements re global redundancy/resilience etc?)
+Limits to number of users/history returned, use limit,top & skip type query string parameters
 Automapper, separate service for database access
 Complete suite of Unit tests
 Code Coverage tests
