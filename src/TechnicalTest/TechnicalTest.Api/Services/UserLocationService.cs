@@ -192,6 +192,39 @@ namespace TechnicalTest.Api.Services
             };
         }
 
+        public async Task<OperationResult<List<UserCurrentLocation>>> GetCurrentLocationForUsersNearLocationAsync(double latitude, double longitude, int radiusInNm)
+        {
+            try
+            {
+                var allUsersCurrentLocation = await GetAllUsersCurrentLocation();
+
+                var usersInArea = allUsersCurrentLocation
+                    .Where(u =>
+                    {
+                        var a = u.CurrentLocation.Latitude - latitude;
+                        var b = u.CurrentLocation.Longitude - longitude;
+                        return Math.Sqrt(Math.Pow(a, 2.0) + Math.Pow(b, 2.0)) < radiusInNm;
+                    })
+                    .ToList();
+
+                return new OperationResult<List<UserCurrentLocation>>()
+                {
+                    Success = true,
+                    Model = usersInArea
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, nameof(GetCurrentLocationForAllUsersAsync));
+            }
+
+            return new OperationResult<List<UserCurrentLocation>>()
+            {
+                Success = false,
+                Model = new List<UserCurrentLocation>()
+            };
+        }
+
         #endregion
 
         #region private methods

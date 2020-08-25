@@ -87,6 +87,10 @@ namespace TechnicalTest.Api.Controllers
         public async Task<IActionResult> GetCurrentLocationForUsersNearLocation([FromRoute]double latitude, [FromRoute]double longitude, [FromRoute]int radiusInNm)
         {
             _logger.LogInformation($"{nameof(GetCurrentLocationForUsersNearLocation)}");
+            var result = await _userLocationService.GetCurrentLocationForUsersNearLocationAsync(latitude, longitude, radiusInNm);
+            if (result.Success)
+                return Ok(result.Model);
+
             return StatusCode(500);
         }
     }
