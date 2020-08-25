@@ -107,6 +107,29 @@ namespace TechnicalTest.Api.Services
             };
         }
 
+        public async Task<OperationResult<List<UserCurrentLocation>>> GetCurrentLocationForAllUsersAsync()
+        {
+            try
+            {
+                var allUsersCurrentLocation = await GetAllUsersCurrentLocation();
+                return new OperationResult<List<UserCurrentLocation>>()
+                {
+                    Success = true,
+                    Model = allUsersCurrentLocation
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, nameof(GetCurrentLocationForAllUsersAsync));
+            }
+
+            return new OperationResult<List<UserCurrentLocation>>()
+            {
+                Success = false,
+                Model = new List<UserCurrentLocation>()
+            };
+        }
+
         #endregion
 
         #region private methods
@@ -152,6 +175,12 @@ namespace TechnicalTest.Api.Services
             try
             {
                 allUsersCurrentLocation = await GetAllUsersCurrentLocation();
+                var index = allUsersCurrentLocation.FindIndex(u => {
+                    return String.Compare(u.Id, userCurrentLocation.Id, StringComparison.InvariantCultureIgnoreCase) == 0;
+                });
+                if (index > -1)
+                    allUsersCurrentLocation.RemoveAt(index);
+
                 allUsersCurrentLocation.Add(userCurrentLocation);
                 var allUsersCurrentLocationJson = JsonSerializer.Serialize(allUsersCurrentLocation);
                 await _distributedCache.SetStringAsync(ALL_USERS_CURRENT_LOCATION_KEY, allUsersCurrentLocationJson);

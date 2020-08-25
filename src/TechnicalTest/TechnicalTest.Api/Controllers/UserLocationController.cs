@@ -63,6 +63,10 @@ namespace TechnicalTest.Api.Controllers
         public async Task<IActionResult> GetCurrentLocationForAllUsers()
         {
             _logger.LogInformation($"{nameof(GetCurrentLocationForAllUsers)}");
+            var result = await _userLocationService.GetCurrentLocationForAllUsersAsync();
+            if (result.Success)
+                return Ok(result.Model);
+
             return StatusCode(500);
         }
 

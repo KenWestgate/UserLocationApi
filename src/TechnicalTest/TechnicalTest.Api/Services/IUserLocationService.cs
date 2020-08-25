@@ -11,5 +11,6 @@ namespace TechnicalTest.Api.Services
         Task<OperationResult<UserCurrentLocation>> SetCurrentLocationForUserAsync(UserCurrentLocationUpdate model);
         Task<OperationResult<UserCurrentLocation>> GetCurrentLocationForUserAsync(string userIdentifier);
         Task<OperationResult<List<UserCurrentLocation>>> GetLocationHistoryForUserAsync(string userIdentifier);
+        Task<OperationResult<List<UserCurrentLocation>>> GetCurrentLocationForAllUsersAsync();
     }
 }
