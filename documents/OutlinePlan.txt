@@ -9,10 +9,10 @@ x add swagger
 x sketch out api, documents(models) from requirements doc
 - (and unit tests?)
 x add redis cache
-add calls to/from cache
+x add calls to/from cache
 - automapper - no
-dockerize
-deploy to azure api
+x dockerize
+x deploy to azure api
 create postman team and share
 ReadMe file
 
