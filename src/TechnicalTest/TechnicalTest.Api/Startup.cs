@@ -10,6 +10,7 @@ using StackExchange.Redis;
 using System;
 using System.Security.Authentication;
 using System.Text;
+using TechnicalTest.Api.Extensions;
 using TechnicalTest.Api.Services;
 
 namespace TechnicalTest.Api
@@ -56,6 +57,14 @@ namespace TechnicalTest.Api
 
             services.AddScoped<IUserLocationService, UserLocationService>();
             services.AddScoped<IUserLocationCacheService, UserLocationCacheService>();
+
+            services.AddCosmosDbService(config =>
+            {
+                config.AccountEndPoint = Configuration["CosmosDb:AccountEndPoint"];
+                config.Key = Configuration["CosmosDb:Key"];
+                config.DatabaseName = Configuration["CosmosDb:DatabaseName"];
+                config.ContainerName = Configuration["CosmosDb:ContainerName"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

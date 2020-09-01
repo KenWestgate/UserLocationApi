@@ -12,11 +12,15 @@ namespace TechnicalTest.Api.Services
     public class UserLocationService : IUserLocationService
     {
         private readonly ILogger<UserLocationService> _logger;
+        private readonly ICosmosDbService _cosmosDbService;
         private readonly IUserLocationCacheService _userLocationCacheService;
 
-        public UserLocationService(ILogger<UserLocationService> logger, IUserLocationCacheService userLocationCacheService)
+        public UserLocationService(ILogger<UserLocationService> logger,
+            ICosmosDbService cosmosDbService,
+            IUserLocationCacheService userLocationCacheService)
         {
             _logger = logger;
+            _cosmosDbService = cosmosDbService;
             _userLocationCacheService = userLocationCacheService;
         }
 
@@ -31,6 +35,7 @@ namespace TechnicalTest.Api.Services
                     TimeAtLocation = DateTime.UtcNow
                 };
                 await _userLocationCacheService.SetCurrentLocationForUserAsync(userCurrentLocation);
+                await _cosmosDbService.SetCurrentLocationForUserAsync(userCurrentLocation);
                 await _userLocationCacheService.SetLocationHistoryForUser(userCurrentLocation);
                 await _userLocationCacheService.SetCurrentLocationForAllUsers(userCurrentLocation);
 
@@ -54,22 +59,30 @@ namespace TechnicalTest.Api.Services
 
         public async Task<OperationResult<UserCurrentLocation>> GetCurrentLocationForUserAsync(string userIdentifier)
         {
-            var userCurrentLocation = new UserCurrentLocation();
-            var success = false;
             try
             {
-                userCurrentLocation = await _userLocationCacheService.GetCurrentLocationForUserAsync(userIdentifier);
-                success = ((userCurrentLocation != null) && (!string.IsNullOrEmpty(userCurrentLocation.Id)));
+                var userCurrentLocation = await _userLocationCacheService.GetCurrentLocationForUserAsync(userIdentifier);
+                if (userCurrentLocation == null)
+                {
+                    userCurrentLocation = await _cosmosDbService.GetCurrentLocationForUserAsync(userIdentifier);
+                    if (userCurrentLocation != null)
+                        await _userLocationCacheService.SetCurrentLocationForUserAsync(userCurrentLocation);
+                }
+                if (userCurrentLocation != null)
+                    return new OperationResult<UserCurrentLocation>()
+                    {
+                        Model = userCurrentLocation,
+                        Success = true
+                    };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"{nameof(GetCurrentLocationForUserAsync)} - {userIdentifier}");
             }
-
             return new OperationResult<UserCurrentLocation>()
             {
-                Success = success,
-                Model = userCurrentLocation
+                Success = false,
+                Model = default
             };
         }
 
