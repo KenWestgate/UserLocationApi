@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using TechnicalTest.Api.Documents;
 using TechnicalTest.Api.Documents.Get;
@@ -13,41 +11,59 @@ namespace TechnicalTest.Api.Services
 {
     public class UserLocationService : IUserLocationService
     {
-        private readonly IDistributedCache _distributedCache;
         private readonly ILogger<UserLocationService> _logger;
+        private readonly IUserLocationCacheService _userLocationCacheService;
 
-        private const string ALL_USERS_CURRENT_LOCATION_KEY = "all-users-current-location";
-
-        private const string USER_CURRENT_LOCATION_KEY_SUFFIX = "-current-location";
-        private const string USER_LOCATION_HISTORY_SUFFIX = "-location-history";
-
-        public UserLocationService(IDistributedCache distributedCache, ILogger<UserLocationService> logger)
+        public UserLocationService(ILogger<UserLocationService> logger, IUserLocationCacheService userLocationCacheService)
         {
-            _distributedCache = distributedCache;
             _logger = logger;
+            _userLocationCacheService = userLocationCacheService;
         }
-
-        #region public methods
 
         public async Task<OperationResult<UserCurrentLocation>> SetCurrentLocationForUserAsync(UserCurrentLocationUpdate model)
         {
-            var success = false;
-            var userCurrentLocation = new UserCurrentLocation();
             try
             {
-                userCurrentLocation.Id = model.Id;
-                userCurrentLocation.CurrentLocation = model.CurrentLocation;
-                userCurrentLocation.TimeAtLocation = DateTime.UtcNow;
+                var userCurrentLocation = new UserCurrentLocation()
+                {
+                    Id = model.Id,
+                    CurrentLocation = model.CurrentLocation,
+                    TimeAtLocation = DateTime.UtcNow
+                };
+                await _userLocationCacheService.SetCurrentLocationForUserAsync(userCurrentLocation);
+                await _userLocationCacheService.SetLocationHistoryForUser(userCurrentLocation);
+                await _userLocationCacheService.SetCurrentLocationForAllUsers(userCurrentLocation);
 
-                await UpdateCurrentLocationForUser(userCurrentLocation);
-                await UpdateLocationHistoryForUser(userCurrentLocation);
-                await UpdateAllUsersCurrentLocation(userCurrentLocation);
-
-                success = true;
+                return new OperationResult<UserCurrentLocation>()
+                {
+                    Success = true,
+                    Model = userCurrentLocation
+                };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"{nameof(SetCurrentLocationForUserAsync)} - {model.Id}");
+            }
+
+            return new OperationResult<UserCurrentLocation>()
+            {
+                Success = false,
+                Model = default
+            };
+        }
+
+        public async Task<OperationResult<UserCurrentLocation>> GetCurrentLocationForUserAsync(string userIdentifier)
+        {
+            var userCurrentLocation = new UserCurrentLocation();
+            var success = false;
+            try
+            {
+                userCurrentLocation = await _userLocationCacheService.GetCurrentLocationForUserAsync(userIdentifier);
+                success = ((userCurrentLocation != null) && (!string.IsNullOrEmpty(userCurrentLocation.Id)));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{nameof(GetCurrentLocationForUserAsync)} - {userIdentifier}");
             }
 
             return new OperationResult<UserCurrentLocation>()
@@ -57,44 +73,14 @@ namespace TechnicalTest.Api.Services
             };
         }
 
-        public async Task<OperationResult<UserCurrentLocation>> GetCurrentLocationForUserAsync(string userIdentifier)
-        {
-            try
-            {
-                var key = $"{userIdentifier}{USER_CURRENT_LOCATION_KEY_SUFFIX}";
-                var userCurrentLocationJson = await _distributedCache.GetStringAsync(key);
-                var userCurrentLocation = JsonSerializer.Deserialize<UserCurrentLocation>(userCurrentLocationJson);
-                return new OperationResult<UserCurrentLocation>()
-                {
-                    Success = true,
-                    Model = userCurrentLocation
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"{nameof(GetCurrentLocationForUserAsync)} - {userIdentifier}");
-            }
-
-            return new OperationResult<UserCurrentLocation>()
-            {
-                Success = false,
-                Model = new UserCurrentLocation()
-            };
-        }
-
         public async Task<OperationResult<List<UserCurrentLocation>>> GetLocationHistoryForUserAsync(string userIdentifier)
         {
+            var locationHistoryForUser = new List<UserCurrentLocation>();
+            var success = false;
             try
             {
-                // TODO: key making function for consistency
-                var key = $"{userIdentifier}{USER_LOCATION_HISTORY_SUFFIX}";
-                var userLocationHistoryJson = await _distributedCache.GetStringAsync(key);
-                var userLocationHistory = JsonSerializer.Deserialize<List<UserCurrentLocation>>(userLocationHistoryJson);
-                return new OperationResult<List<UserCurrentLocation>>()
-                {
-                    Success = true,
-                    Model = userLocationHistory
-                };
+                locationHistoryForUser = await _userLocationCacheService.GetLocationHistoryForUserAsync(userIdentifier);
+                success = ((locationHistoryForUser != null) && (locationHistoryForUser.Count > 0));
             }
             catch (Exception ex)
             {
@@ -103,21 +89,19 @@ namespace TechnicalTest.Api.Services
 
             return new OperationResult<List<UserCurrentLocation>>()
             {
-                Success = false,
-                Model = new List<UserCurrentLocation>()
+                Success = success,
+                Model = locationHistoryForUser
             };
         }
 
         public async Task<OperationResult<List<UserCurrentLocation>>> GetCurrentLocationForAllUsersAsync()
         {
+            var allUsersCurrentLocation = new List<UserCurrentLocation>();
+            var success = false;
             try
             {
-                var allUsersCurrentLocation = await GetAllUsersCurrentLocation();
-                return new OperationResult<List<UserCurrentLocation>>()
-                {
-                    Success = true,
-                    Model = allUsersCurrentLocation
-                };
+                allUsersCurrentLocation = await _userLocationCacheService.GetCurrentLocationForAllUsersAsync();
+                success = ((allUsersCurrentLocation != null) && (allUsersCurrentLocation.Count > 0));
             }
             catch (Exception ex)
             {
@@ -126,8 +110,8 @@ namespace TechnicalTest.Api.Services
 
             return new OperationResult<List<UserCurrentLocation>>()
             {
-                Success = false,
-                Model = new List<UserCurrentLocation>()
+                Success = success,
+                Model = allUsersCurrentLocation
             };
         }
 
@@ -135,7 +119,7 @@ namespace TechnicalTest.Api.Services
         {
             try
             {
-                var allUsersCurrentLocation = await GetAllUsersCurrentLocation();
+                var allUsersCurrentLocation = await _userLocationCacheService.GetCurrentLocationForAllUsersAsync();
 
                 var leftBoundary = 0D;
                 var rightBoundary = 0D;
@@ -196,7 +180,7 @@ namespace TechnicalTest.Api.Services
         {
             try
             {
-                var allUsersCurrentLocation = await GetAllUsersCurrentLocation();
+                var allUsersCurrentLocation = await _userLocationCacheService.GetCurrentLocationForAllUsersAsync();
 
                 var usersInArea = allUsersCurrentLocation
                     .Where(u =>
@@ -224,88 +208,5 @@ namespace TechnicalTest.Api.Services
                 Model = new List<UserCurrentLocation>()
             };
         }
-
-        #endregion
-
-        #region private methods
-
-        private async Task UpdateCurrentLocationForUser(UserCurrentLocation userCurrentLocation)
-        {
-            try
-            {
-                var key = $"{userCurrentLocation.Id}{USER_CURRENT_LOCATION_KEY_SUFFIX}";
-                var userCurrentLocationJson = JsonSerializer.Serialize(userCurrentLocation);
-                await _distributedCache.SetStringAsync(key, userCurrentLocationJson);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"nameof(UpdateCurrentLocationForUser): {userCurrentLocation.Id}");
-                throw new Exception($"nameof(UpdateCurrentLocationForUser): {userCurrentLocation.Id}", ex);
-            }
-        }
-
-        private async Task UpdateLocationHistoryForUser(UserCurrentLocation userCurrentLocation)
-        {
-            var userLocationHistory = new List<UserCurrentLocation>();
-            try
-            {
-                var key = $"{userCurrentLocation.Id}{USER_LOCATION_HISTORY_SUFFIX}";
-                var userLocationHistoryJson = await _distributedCache.GetStringAsync(key);
-                if (!string.IsNullOrWhiteSpace(userLocationHistoryJson))
-                    userLocationHistory = JsonSerializer.Deserialize<List<UserCurrentLocation>>(userLocationHistoryJson);
-                userLocationHistory.Add(userCurrentLocation);
-                userLocationHistoryJson = JsonSerializer.Serialize(userLocationHistory);
-                await _distributedCache.SetStringAsync(key, userLocationHistoryJson);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"nameof(UpdateLocationHistoryForUser): {userCurrentLocation.Id}");
-                throw new Exception($"nameof(UpdateLocationHistoryForUser): {userCurrentLocation.Id}", ex);
-            }
-        }
-
-        private async Task UpdateAllUsersCurrentLocation(UserCurrentLocation userCurrentLocation)
-        {
-            var allUsersCurrentLocation = new List<UserCurrentLocation>();
-            try
-            {
-                allUsersCurrentLocation = await GetAllUsersCurrentLocation();
-                var index = allUsersCurrentLocation.FindIndex(u =>
-                {
-                    return String.Compare(u.Id, userCurrentLocation.Id, StringComparison.InvariantCultureIgnoreCase) == 0;
-                });
-                if (index > -1)
-                    allUsersCurrentLocation.RemoveAt(index);
-
-                allUsersCurrentLocation.Add(userCurrentLocation);
-                var allUsersCurrentLocationJson = JsonSerializer.Serialize(allUsersCurrentLocation);
-                await _distributedCache.SetStringAsync(ALL_USERS_CURRENT_LOCATION_KEY, allUsersCurrentLocationJson);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"nameof(UpdateAllUsersCurrentLocation): {userCurrentLocation.Id}");
-                throw new Exception($"nameof(UpdateAllUsersCurrentLocation): {userCurrentLocation.Id}", ex);
-            }
-        }
-
-        private async Task<List<UserCurrentLocation>> GetAllUsersCurrentLocation()
-        {
-            var allUsersCurrentLocation = new List<UserCurrentLocation>();
-            try
-            {
-                var allUsersCurrentLocationJson = await _distributedCache.GetStringAsync(ALL_USERS_CURRENT_LOCATION_KEY);
-                if (!string.IsNullOrWhiteSpace(allUsersCurrentLocationJson))
-                    allUsersCurrentLocation = JsonSerializer.Deserialize<List<UserCurrentLocation>>(allUsersCurrentLocationJson);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"nameof(GetAllUsersCurrentLocation)");
-                throw new Exception($"nameof(GetAllUsersCurrentLocation):", ex);
-            }
-
-            return allUsersCurrentLocation;
-        }
-
-        #endregion
     }
 }

@@ -55,6 +55,7 @@ namespace TechnicalTest.Api
             services.AddStackExchangeRedisCache(o => o.ConfigurationOptions = options);
 
             services.AddScoped<IUserLocationService, UserLocationService>();
+            services.AddScoped<IUserLocationCacheService, UserLocationCacheService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
