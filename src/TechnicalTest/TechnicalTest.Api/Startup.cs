@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Security.Authentication;
 using System.Text;
@@ -50,6 +51,7 @@ namespace TechnicalTest.Api
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey
                 });
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
             services.AddDistributedMemoryCache();
