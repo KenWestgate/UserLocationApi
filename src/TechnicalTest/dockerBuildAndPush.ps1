@@ -1,14 +1,12 @@
 $imageTag = Get-Date -Format "yyyyMMddHHmmss"
-$imageName = "technical-test"
-$acrName = "techtest20200824"
-$acrFullName = "techtest20200824.azurecr.io"
-$imageFullTag = "$($acrFullName)/$($imageName):$($imageTag)"
+$imageName = "userlocation-api"
+
+$namespace = Read-Host -Prompt "Docker hub namespace"
+$imageFullTag = "docker.io/$($namespace)/$($imageName):$($imageTag)"
 
 Write-Host "Build $($imageFullTag)"
 docker build -t $imageFullTag .
 
-Write-Host "pushing to ACR"
-az login
-az acr login --name $acrName
+Write-Host "pushing image to docker hub: $($imageFullTag)"
 
 docker push $imageFullTag
