@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using TechnicalTest.Api.Documents.Set;
-using TechnicalTest.Api.Services;
+using UserLocation.Api.Documents.Set;
+using UserLocation.Api.Services;
 
-namespace TechnicalTest.Api.Controllers
+namespace UserLocation.Api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace TechnicalTest.Api.Tests
+namespace UserLocation.Api.Tests
 {
     public class Tests
     {

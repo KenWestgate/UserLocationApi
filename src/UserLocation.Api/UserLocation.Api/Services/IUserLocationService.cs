@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TechnicalTest.Api.Documents;
-using TechnicalTest.Api.Documents.Get;
-using TechnicalTest.Api.Documents.Set;
+using UserLocation.Api.Documents;
+using UserLocation.Api.Documents.Get;
+using UserLocation.Api.Documents.Set;
 
-namespace TechnicalTest.Api.Services
+namespace UserLocation.Api.Services
 {
     public interface IUserLocationService
     {

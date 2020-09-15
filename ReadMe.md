@@ -5,7 +5,7 @@ Latitude: 51.752022,
 Longitude: -1.257726
 
 ## Development
-Open the src/TechnicalTest/TechnicalTest.sln solution file using Visual Studio 2019.
+Open the src/UserLocation.Api/UserLocation.Api.sln solution file using Visual Studio 2019.
 
 Add the following json to the user secrets file:
 `{
@@ -28,7 +28,7 @@ The TestData.json file in the resources folder has data for use in testing.
 pre-requisites:
 - docker hub account
 Building and pushing the image
-- Change to the src/TechnicalTest folder
+- Change to the src/UserLocation.Api folder
 - run dockerBuildAndPush.ps1, enter your docker namespace.
 - take a note of the image name for use in the terraform plan/apply
 

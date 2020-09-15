@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest.Api", "TechnicalTest.Api\TechnicalTest.Api.csproj", "{C91DA4BA-0F09-4AC2-B1CB-7C6BB15C8D86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserLocation.Api", "UserLocation.Api\UserLocation.Api.csproj", "{C91DA4BA-0F09-4AC2-B1CB-7C6BB15C8D86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechnicalTest.Api.Tests", "TechnicalTest.Api.Tests\TechnicalTest.Api.Tests.csproj", "{5F9BF730-4FA3-456C-B075-BC535859B542}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserLocation.Api.Tests", "UserLocation.Api.Tests\UserLocation.Api.Tests.csproj", "{5F9BF730-4FA3-456C-B075-BC535859B542}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
