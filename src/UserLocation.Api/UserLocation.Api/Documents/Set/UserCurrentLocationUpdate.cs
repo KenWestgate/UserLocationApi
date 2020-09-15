@@ -1,6 +1,6 @@
-﻿using TechnicalTest.Api.Documents.Common;
+﻿using UserLocation.Api.Documents.Common;
 
-namespace TechnicalTest.Api.Documents.Set
+namespace UserLocation.Api.Documents.Set
 {
     public class UserCurrentLocationUpdate
     {

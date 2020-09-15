@@ -1,7 +1,7 @@
 ﻿using System;
-using TechnicalTest.Api.Documents.Common;
+using UserLocation.Api.Documents.Common;
 
-namespace TechnicalTest.Api.Documents.Get
+namespace UserLocation.Api.Documents.Get
 {
     public class UserCurrentLocation
     {

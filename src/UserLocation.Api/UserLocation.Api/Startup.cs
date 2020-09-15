@@ -12,9 +12,9 @@ using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Security.Authentication;
 using System.Text;
-using TechnicalTest.Api.Services;
+using UserLocation.Api.Services;
 
-namespace TechnicalTest.Api
+namespace UserLocation.Api
 {
     public class Startup
     {

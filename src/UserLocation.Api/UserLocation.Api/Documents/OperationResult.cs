@@ -1,4 +1,4 @@
-﻿namespace TechnicalTest.Api.Documents
+﻿namespace UserLocation.Api.Documents
 {
     public class OperationResult<T>
     {

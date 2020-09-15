@@ -1,4 +1,4 @@
-﻿namespace TechnicalTest.Api.Documents.Common
+﻿namespace UserLocation.Api.Documents.Common
 {
     public class Location
     {

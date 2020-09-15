@@ -49,7 +49,7 @@ resource "azurerm_app_service" "userlocation" {
   enabled = true
 
   site_config {
-    app_command_line = "dotnet TechnicalTest.Api.dll"
+    app_command_line = "dotnet UserLocation.Api.dll"
     default_documents = [
       "index.html"
     ]

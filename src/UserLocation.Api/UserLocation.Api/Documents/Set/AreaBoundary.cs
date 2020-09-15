@@ -1,4 +1,4 @@
-﻿namespace TechnicalTest.Api.Documents.Set
+﻿namespace UserLocation.Api.Documents.Set
 {
     public class AreaBoundary
     {
