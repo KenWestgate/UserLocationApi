@@ -2,7 +2,6 @@
 
 Get-TerraformToken
 Get-Auth0Secrets
-Get-DockerImage
 
 Push-Location ./terraform
 

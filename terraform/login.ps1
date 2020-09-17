@@ -32,9 +32,3 @@ function Get-Auth0Secrets() {
     $auth0_variables_json = $auth0_variables | ConvertTo-Json -Depth 100
     Set-Content -Path $auth0_secrets_file -Value $auth0_variables_json
 }
-
-function Get-DockerImage() {
-    if ([string]::IsNullOrWhiteSpace($env:TF_VAR_docker_image)) {
-        $env:TF_VAR_docker_image = Read-Host -Prompt "Docker image"
-    }
-}
