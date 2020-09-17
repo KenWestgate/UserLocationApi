@@ -16,7 +16,3 @@ variable "auth0_domain" {
 variable "auth0_client_secret" {
   type = string
 }
-
-variable "docker_image" {
-  type = string
-}
