@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "userlocationapi.fullname" . }}-service-test-{{ randAlphaNum 5 | lower }}
+  labels:
+    {{- include "userlocationapi.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    sidecar.istio.io/inject: "false"
+    linkerd.io/inject: disabled
+    appmesh.k8s.aws/sidecarInjectorWebhook: disabled
+spec:
+  containers:
+    - name: curl
+      image: curlimages/curl:7.69.0
+      command:
+        - sh
+        - -c
+        - |
+          curl -s ${userlocationapi_SVC}/api/info | grep version
+      env:
+        - name: userlocationapi_SVC
+          value: "{{ template "userlocationapi.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.externalPort }}"
+  restartPolicy: Never
