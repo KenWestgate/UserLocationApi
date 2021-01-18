@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: podinfod
-        image: ghcr.io/stefanprodan/podinfo:5.1.2
+        image: registry.abxinternal.com/airboxukweather
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
